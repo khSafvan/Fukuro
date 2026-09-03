@@ -15,16 +15,12 @@
 
 ## Installation
 
-Download the latest APK from your GitHub repository releases page.
-
-Two build variants are available:
-- **Standard**: Standard release containing Firebase crash reporting and Google Play Services integrations.
-- **FOSS**: Fully open-source release without Google Play Services or non-free dependencies.
+Download the latest release APK (`Fukuro.apk` or architecture-specific build) from the GitHub releases page.
 
 To sideload the APK onto a connected Android device via ADB:
 
 ```bash
-adb install -r Fukuro-standard.apk
+adb install -r Fukuro.apk
 ```
 
 *Note: The app includes a built-in update checker under `More → About → Check for updates`.*
