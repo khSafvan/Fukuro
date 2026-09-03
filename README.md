@@ -82,10 +82,50 @@ Use the included Gradle wrapper (`./gradlew`) to build and test:
   ./scripts/clean.sh --all       # Safely cleans module build directories and .gradle cache
   ```
 
-### Live Reload & Fast Iteration
+### Testing & Running on Linux (via Waydroid)
+
+This project is actively tested and developed on Linux using [Waydroid](https://waydro.id/) (container-based Android runtime).
+
+#### 1. Sideload into Waydroid
+Ensure your Waydroid session is running (`waydroid session start`), then install the built debug APK:
+
+```bash
+# Standard Debug Variant
+waydroid app install app/build/outputs/apk/standard/debug/app-standard-debug.apk
+
+# Or FOSS Debug Variant
+waydroid app install app/build/outputs/apk/foss/debug/app-foss-debug.apk
+```
+
+#### 2. Launch the App
+Launch Fukurō directly inside your Waydroid container using its debug package name:
+
+```bash
+waydroid app launch eu.kanade.tachiyomi.fukuro.debug
+```
+
+#### 3. Waydroid-Specific Considerations
+- **Image Type (GApps vs. Vanilla)**: If running a vanilla (non-GApps) Waydroid image, use the **FOSS** build (`./gradlew assembleFossDebug`) to avoid harmless Firebase initialization warnings on launch.
+- **Container Networking & DNS**: If manga source chapters time out or fail to load inside Waydroid, enable **DNS-over-HTTPS** in Fukurō (`More → Settings → Advanced → DNS-over-HTTPS → Cloudflare / Google`) to bypass container bridge DNS issues.
+- **Local Manga & Backup Files**: You can transfer `.tachibk` backups or local chapter folders directly into Waydroid via the shared media path on your host (`~/.local/share/waydroid/data/media/0/`).
+
+#### 4. UI Fast Iteration (Live Edit)
 The UI is built with **Jetpack Compose**. When developing in Android Studio:
-- Use **Compose Preview** directly in Android Studio editor panels for instant layout rendering.
-- Use **Live Edit** / **Apply Code Changes** (`Ctrl+Alt+F10` / `Cmd+Option+R`) to hot-swap Compose composables on a running emulator or device without performing a full reinstall.
+- Use **Compose Preview** directly in editor panels for instant layout rendering.
+- Use **Live Edit** / **Apply Code Changes** (`Ctrl+Alt+F10` / `Cmd+Option+R`) to hot-swap Compose composables without a full rebuild.
+
+---
+
+#### Alternative: Physical Device / Standard ADB Testing
+For contributors testing on a physical Android device or standard AVD emulator, ADB can be used directly (Waydroid also registers with ADB when active):
+
+```bash
+# Install via ADB
+adb install -r app/build/outputs/apk/standard/debug/app-standard-debug.apk
+
+# View logcat output filtered to Fukurō
+adb logcat -s "Fukuro" "logcat"
+```
 
 ### Secrets & Configuration
 - **`local.properties`**: Android Studio automatically manages `sdk.dir`.
