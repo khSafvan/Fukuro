@@ -21,6 +21,8 @@ import eu.kanade.tachiyomi.ui.reader.setting.ReadingMode
 import tachiyomi.i18n.MR
 import tachiyomi.i18n.sy.SYMR
 import tachiyomi.presentation.core.i18n.stringResource
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import eu.kanade.presentation.theme.TachiyomiPreviewTheme
 
 @Composable
 fun ReaderBottomBar(
@@ -155,3 +157,27 @@ fun ReaderBottomBar(
         // SY <--
     }
 }
+
+@PreviewLightDark
+@Composable
+private fun ReaderBottomBarPreview() {
+    TachiyomiPreviewTheme {
+        ReaderBottomBar(
+            readingMode = ReadingMode.DEFAULT,
+            onClickReadingMode = {},
+            orientation = ReaderOrientation.DEFAULT,
+            onClickOrientation = {},
+            cropEnabled = false,
+            onClickCropBorder = {},
+            onClickSettings = {},
+            enabledButtons = emptySet(),
+            currentReadingMode = ReadingMode.DEFAULT,
+            dualPageSplitEnabled = false,
+            doublePages = false,
+            onClickChapterList = {},
+            onClickPageLayout = {},
+            onClickShiftPage = {},
+        )
+    }
+}
+

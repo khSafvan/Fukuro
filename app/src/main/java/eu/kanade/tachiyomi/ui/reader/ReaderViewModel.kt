@@ -864,6 +864,9 @@ class ReaderViewModel @JvmOverloads constructor(
     fun toggleBookmark(chapterId: Long, bookmarked: Boolean) {
         val chapter = chapterList.find { it.chapter.id == chapterId }?.chapter ?: return
         chapter.bookmark = bookmarked
+        if (state.value.dialog is Dialog.ChapterList) {
+            mutableState.update { it.copy(dialog = Dialog.ChapterList(getChapters())) }
+        }
         viewModelScope.launchNonCancellable {
             updateChapter.await(
                 ChapterUpdate(
@@ -1003,7 +1006,7 @@ class ReaderViewModel @JvmOverloads constructor(
     }
 
     fun openChapterListDialog() {
-        mutableState.update { it.copy(dialog = Dialog.ChapterList) }
+        mutableState.update { it.copy(dialog = Dialog.ChapterList(getChapters())) }
     }
 
     fun setDoublePages(doublePages: Boolean) {
@@ -1384,7 +1387,7 @@ class ReaderViewModel @JvmOverloads constructor(
         data object OrientationModeSelect : Dialog
 
         // SY -->
-        data object ChapterList : Dialog
+        data class ChapterList(val chapters: List<ReaderChapterItem> = emptyList()) : Dialog
         // SY <--
 
         data class PageActions(

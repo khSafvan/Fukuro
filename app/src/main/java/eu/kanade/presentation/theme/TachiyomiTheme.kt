@@ -24,6 +24,9 @@ import eu.kanade.presentation.theme.colorscheme.TealTurqoiseColorScheme
 import eu.kanade.presentation.theme.colorscheme.TidalWaveColorScheme
 import eu.kanade.presentation.theme.colorscheme.YinYangColorScheme
 import eu.kanade.presentation.theme.colorscheme.YotsubaColorScheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import tachiyomi.presentation.core.util.collectAsState
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
@@ -33,10 +36,12 @@ fun TachiyomiTheme(
     amoled: Boolean? = null,
     content: @Composable () -> Unit,
 ) {
-    val uiPreferences = Injekt.get<UiPreferences>()
+    val uiPreferences = remember { Injekt.get<UiPreferences>() }
+    val theme by uiPreferences.appTheme.collectAsState()
+    val isAmoledPref by uiPreferences.themeDarkAmoled.collectAsState()
     BaseTachiyomiTheme(
-        appTheme = appTheme ?: uiPreferences.appTheme.get(),
-        isAmoled = amoled ?: uiPreferences.themeDarkAmoled.get(),
+        appTheme = appTheme ?: theme,
+        isAmoled = amoled ?: isAmoledPref,
         content = content,
     )
 }

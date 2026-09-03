@@ -389,28 +389,18 @@ class ReaderActivity : BaseActivity() {
             }
 
             is ReaderViewModel.Dialog.ChapterList -> {
-                var chapters by remember {
-                    mutableStateOf(viewModel.getChapters())
-                }
                 ChapterListDialog(
                     onDismissRequest = onDismissRequest,
                     screenModel = settingsScreenModel,
-                    chapters = chapters,
+                    chapters = (state.dialog as ReaderViewModel.Dialog.ChapterList).chapters,
                     onClickChapter = {
                         viewModel.loadNewChapterFromDialog(it)
                         onDismissRequest()
                     },
                     onBookmark = { chapter ->
                         viewModel.toggleBookmark(chapter.id, !chapter.bookmark)
-                        chapters = chapters.map {
-                            if (it.chapter.id == chapter.id) {
-                                it.copy(chapter = chapter.copy(bookmark = !chapter.bookmark))
-                            } else {
-                                it
-                            }
-                        }
                     },
-                    state.dateRelativeTime,
+                    dateRelativeTime = state.dateRelativeTime,
                 )
             }
             // SY -->

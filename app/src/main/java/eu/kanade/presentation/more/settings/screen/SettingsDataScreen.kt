@@ -113,8 +113,8 @@ object SettingsDataScreen : SearchableSettings {
 
     @Composable
     override fun getPreferences(): List<Preference> {
-        val backupPreferences = Injekt.get<BackupPreferences>()
-        val storagePreferences = Injekt.get<StoragePreferences>()
+        val backupPreferences = remember { Injekt.get<BackupPreferences>() }
+        val storagePreferences = remember { Injekt.get<StoragePreferences>() }
 
         val syncPreferences = remember { Injekt.get<SyncPreferences>() }
         val syncService by syncPreferences.syncService.collectAsState()
@@ -574,7 +574,7 @@ object SettingsDataScreen : SearchableSettings {
     @Composable
     private fun getGoogleDrivePreferences(): List<Preference> {
         val context = LocalContext.current
-        val googleDriveSync = Injekt.get<GoogleDriveService>()
+        val googleDriveSync = remember { Injekt.get<GoogleDriveService>() }
         return listOf(
             Preference.PreferenceItem.TextPreference(
                 title = stringResource(SYMR.strings.pref_google_drive_sign_in),

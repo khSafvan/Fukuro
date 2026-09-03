@@ -1,8 +1,10 @@
 package tachiyomi.domain.chapter.model
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.json.JsonObject
 import mihon.core.common.extensions.EMPTY
 
+@Immutable
 data class Chapter(
     val id: Long,
     val mangaId: Long,

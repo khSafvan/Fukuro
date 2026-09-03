@@ -43,6 +43,8 @@ import tachiyomi.i18n.MR
 import tachiyomi.presentation.core.components.BadgeGroup
 import tachiyomi.presentation.core.i18n.stringResource
 import tachiyomi.presentation.core.util.selectedBackground
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import eu.kanade.presentation.theme.TachiyomiPreviewTheme
 import tachiyomi.domain.manga.model.MangaCover as MangaCoverModel
 
 object CommonMangaItemDefaults {
@@ -402,3 +404,46 @@ private fun ContinueReadingButton(
         }
     }
 }
+
+@PreviewLightDark
+@Composable
+private fun MangaCompactGridItemPreview() {
+    TachiyomiPreviewTheme {
+        Box(modifier = Modifier.size(120.dp, 180.dp)) {
+            MangaCompactGridItem(
+                coverData = MangaCoverModel(
+                    mangaId = 1L,
+                    sourceId = 1L,
+                    isMangaFavorite = false,
+                    ogUrl = null,
+                    lastModified = 0L,
+                ),
+                title = "Sample Manga Title",
+                onClick = {},
+                onLongClick = {},
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun MangaComfortableGridItemPreview() {
+    TachiyomiPreviewTheme {
+        Box(modifier = Modifier.size(120.dp, 200.dp)) {
+            MangaComfortableGridItem(
+                coverData = MangaCoverModel(
+                    mangaId = 1L,
+                    sourceId = 1L,
+                    isMangaFavorite = false,
+                    ogUrl = null,
+                    lastModified = 0L,
+                ),
+                title = "Sample Manga Title",
+                onClick = {},
+                onLongClick = {},
+            )
+        }
+    }
+}
+

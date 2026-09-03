@@ -25,11 +25,14 @@ import kotlinx.coroutines.plus
 import soup.compose.material.motion.animation.materialSharedAxisX
 import soup.compose.material.motion.animation.rememberSlideDistance
 
+import androidx.compose.runtime.Stable
+
 /**
  * For invoking back press to the parent activity
  */
 val LocalBackPress: ProvidableCompositionLocal<(() -> Unit)?> = staticCompositionLocalOf { null }
 
+@Stable
 interface Tab : cafe.adriel.voyager.navigator.tab.Tab {
     suspend fun onReselect(navigator: Navigator) {}
 

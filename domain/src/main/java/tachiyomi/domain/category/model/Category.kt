@@ -1,7 +1,9 @@
 package tachiyomi.domain.category.model
 
+import androidx.compose.runtime.Immutable
 import java.io.Serializable
 
+@Immutable
 data class Category(
     val id: Long,
     val name: String,

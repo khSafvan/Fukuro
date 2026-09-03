@@ -1,18 +1,19 @@
 package eu.kanade.tachiyomi.ui.library
 
+import androidx.compose.runtime.Immutable
 import eu.kanade.tachiyomi.source.getNameForMangaInfo
 import tachiyomi.domain.library.model.LibraryManga
 import tachiyomi.domain.source.service.SourceManager
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 
+@Immutable
 data class LibraryItem(
     val libraryManga: LibraryManga,
     val downloadCount: Int = -1,
     val unreadCount: Long = -1,
     val isLocal: Boolean = false,
     val sourceLanguage: String = "",
-    private val sourceManager: SourceManager = Injekt.get(),
     val badges: Badges,
 ) {
     val id: Long = libraryManga.id
@@ -24,7 +25,7 @@ data class LibraryItem(
      * @return true if the manga matches the query, false otherwise.
      */
     fun matches(constraint: String): Boolean {
-        val sourceName by lazy { sourceManager.getOrStub(libraryManga.manga.source).getNameForMangaInfo() }
+        val sourceName by lazy { Injekt.get<SourceManager>().getOrStub(libraryManga.manga.source).getNameForMangaInfo() }
         if (constraint.startsWith("id:", true)) {
             return id == constraint.substringAfter("id:").toLongOrNull()
         }
@@ -59,6 +60,7 @@ data class LibraryItem(
         }
     }
 
+    @Immutable
     data class Badges(
         val downloadCount: Int,
         val unreadCount: Long,

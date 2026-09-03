@@ -5,6 +5,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import eu.kanade.presentation.components.AppBar
 
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import eu.kanade.presentation.theme.TachiyomiPreviewTheme
+
 @Composable
 fun ReaderTopBar(
     mangaTitle: String?,
@@ -23,54 +26,18 @@ fun ReaderTopBar(
         title = mangaTitle,
         subtitle = chapterTitle,
         navigateUp = navigateUp,
-        /* SY ->
-        actions = {
-            AppBarActions(
-                actions = buildList {
-                    add(
-                        AppBar.Action(
-                            title = stringResource(
-                                if (bookmarked) {
-                                    MR.strings.action_remove_bookmark
-                                } else {
-                                    MR.strings.action_bookmark
-                                },
-                            ),
-                            icon = if (bookmarked) {
-                                Icons.Outlined.Bookmark
-                            } else {
-                                Icons.Outlined.BookmarkBorder
-                            },
-                            onClick = onToggleBookmarked,
-                        ),
-                    )
-                    onOpenInWebView?.let {
-                        add(
-                            AppBar.OverflowAction(
-                                title = stringResource(MR.strings.action_open_in_web_view),
-                                onClick = it,
-                            ),
-                        )
-                    }
-                    onOpenInBrowser?.let {
-                        add(
-                            AppBar.OverflowAction(
-                                title = stringResource(MR.strings.action_open_in_browser),
-                                onClick = it,
-                            ),
-                        )
-                    }
-                    onShare?.let {
-                        add(
-                            AppBar.OverflowAction(
-                                title = stringResource(MR.strings.action_share),
-                                onClick = it,
-                            ),
-                        )
-                    }
-                },
-            )
-        },
-        <- SY */
     )
 }
+
+@PreviewLightDark
+@Composable
+private fun ReaderTopBarPreview() {
+    TachiyomiPreviewTheme {
+        ReaderTopBar(
+            mangaTitle = "Sample Manga Title",
+            chapterTitle = "Ch. 1 - The Beginning",
+            navigateUp = {},
+        )
+    }
+}
+

@@ -186,7 +186,10 @@ class MainActivity : BaseActivity() {
         setComposeContent {
             val context = LocalContext.current
 
-            var incognito by remember { mutableStateOf(getIncognitoState.await(null)) }
+            var incognito by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) {
+                incognito = getIncognitoState.await(null)
+            }
             val downloadOnly by preferences.downloadedOnly.collectAsState()
             val indexing by downloadCache.isInitializing.collectAsState()
 
