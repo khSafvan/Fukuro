@@ -123,3 +123,55 @@ See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md).
 
 [See our website.](https://mihon.app/)
 You can also reach out to us on [Discord](https://discord.gg/mihon).
+
+---
+
+## Developer Guide & Repository Structure
+
+### Prerequisites
+- **JDK**: Java 17 or higher
+- **Android SDK**: API 34 (Android 14) SDK and build tools
+- **Gradle**: Uses the Gradle Wrapper (`./gradlew`) included in the project
+
+### Repository Architecture
+This codebase uses a multi-module Kotlin architecture:
+
+| Module | Description |
+| :--- | :--- |
+| `:app` | Main Android app containing UI screens, ViewModels, DI, and SY fork features |
+| `:domain` | Business domain models, repository interfaces, and interactors / use-cases |
+| `:data` | Data persistence (SQLDelight database, preferences, network layer, trackers) |
+| `:presentation-core` | Shared Jetpack Compose design system, themes, and UI components |
+| `:presentation-widget` | Android launcher widgets |
+| `:core:common` | Shared utilities, extensions, and core abstractions |
+| `:source-api` / `:source-local` | Manga extension source interfaces and local filesystem reader source |
+| `gradle/build-logic` | Custom Gradle build convention plugins written in Kotlin |
+
+### Automated Developer Scripts
+Dedicated helper scripts are available in the [`scripts/`](./scripts) directory:
+
+- **Check Code Quality**:
+  ```bash
+  ./scripts/check.sh
+  ```
+  Runs syntax validation and Spotless code formatting verification.
+
+- **Assemble Build**:
+  ```bash
+  ./scripts/build.sh standard   # Build standard debug APK
+  ./scripts/build.sh foss       # Build FOSS debug APK
+  ```
+
+- **Clean Build Caches**:
+  ```bash
+  ./scripts/clean.sh            # Idempotently clean module build directories
+  ./scripts/clean.sh --all      # Deep clean including .gradle and cache folders
+  ```
+
+### Code Style & Formatting
+Kotlin code formatting is enforced via **Spotless** and **Ktlint**.
+Before submitting pull requests, run:
+```bash
+./gradlew spotlessApply
+```
+

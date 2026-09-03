@@ -151,8 +151,6 @@ class ApiMangaParser(
                     links["ap"]?.let { animePlanetId = it }
                 }
 
-                // val filteredChapters = filterChapterForChecking(networkApiManga)
-
                 val tempStatus = parseStatus(mangaAttributesDto.status)
                 val publishedOrCancelled = tempStatus == SManga.PUBLISHING_FINISHED || tempStatus == SManga.CANCELLED
                 status = if (

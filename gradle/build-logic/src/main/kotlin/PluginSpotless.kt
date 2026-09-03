@@ -6,6 +6,12 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
+/**
+ * Convention plugin for configuring Spotless code formatting across Kotlin and XML files.
+ *
+ * Configures Ktlint rules and formatting targets for Kotlin source files (*.kt),
+ * Kotlin Gradle scripts (*.kts), and XML resources (*.xml).
+ */
 @Suppress("UNUSED")
 class PluginSpotless : Plugin<Project> {
     override fun apply(target: Project): Unit = with(target) {

@@ -394,7 +394,6 @@ class ReaderViewModel @JvmOverloads constructor(
                     if (chapterId == -1L) chapterId = initialChapterId
 
                     val context = Injekt.get<Application>()
-                    // val source = sourceManager.getOrStub(manga.source)
                     loader = ChapterLoader(
                         context = context,
                         downloadManager = downloadManager,

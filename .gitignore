@@ -1,21 +1,49 @@
-# Build files
+# ==============================================================================
+# Git Ignore Configuration for TachiyomiSY (Android / Kotlin Gradle Project)
+# ==============================================================================
+
+# Build Output & Caches
 .gradle
 .kotlin
-build
+build/
+**/build/
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.dex
+*.class
 
-# IDE files
+# IDE & Editor Files
 *.iml
 .idea/*
 !.idea/icon.png
-/captures
+!.idea/copyright/
+!.idea/codeStyles/
+.vscode/
+*.swp
+*.swo
+*~
 
-# Configuration files
+# Local Configuration & Credentials
 local.properties
-
-# macOS specific files
-.DS_Store
-
-# SY ignores
 google-services.json
 /app/src/main/assets/client_secrets.json
-*.apk
+*.keystore
+*.jks
+*.p12
+*.pem
+
+# System & OS Specific Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs & Temporary Files
+*.log
+scratch/

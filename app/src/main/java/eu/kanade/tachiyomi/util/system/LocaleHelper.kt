@@ -80,7 +80,9 @@ object LocaleHelper {
             "zh-TW" -> Locale.forLanguageTag("zh-Hant")
             else -> Locale.forLanguageTag(lang)
         }
-        return locale!!.getDisplayName(locale).replaceFirstChar { it.uppercase(locale) }
+        return locale?.let { loc ->
+            loc.getDisplayName(loc).replaceFirstChar { it.uppercase(loc) }
+        }.orEmpty()
     }
 
     /**

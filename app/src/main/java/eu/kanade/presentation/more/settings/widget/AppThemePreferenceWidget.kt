@@ -249,18 +249,3 @@ fun AppThemePreviewItem(
     }
 }
 
-// @PreviewLightDark
-// @Composable
-// private fun AppThemesListPreview() {
-//    var appTheme by remember { mutableStateOf(AppTheme.DEFAULT) }
-//    Injekt.addSingleton(fullType<UiPreferences>(), UiPreferences(InMemoryPreferenceStore()))
-//    TachiyomiTheme(appTheme = appTheme) {
-//        Surface {
-//            AppThemesList(
-//                currentTheme = appTheme,
-//                amoled = false,
-//                onItemClick = { appTheme = it },
-//            )
-//        }
-//    }
-// }

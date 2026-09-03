@@ -73,7 +73,7 @@ class ArchiveReader(pfd: ParcelFileDescriptor) : Closeable {
     private fun isPasswordIncorrect(entryName: String) {
         try {
             getInputStream(entryName).use { stream ->
-                stream!!.read()
+                stream?.read()
             }
         } catch (e: ArchiveException) {
             if (e.message == "Incorrect passphrase") {

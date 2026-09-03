@@ -14,8 +14,6 @@ import tachiyomi.i18n.sy.SYMR
 class MangaDexSearchMetadata : RaisedSearchMetadata(), TrackerIdMetadata {
     var mdUuid: String? = null
 
-    // var mdUrl: String? = null
-
     var cover: String? = null
 
     var title: String? by titleDelegate(TITLE_TYPE_MAIN)
@@ -30,7 +28,6 @@ class MangaDexSearchMetadata : RaisedSearchMetadata(), TrackerIdMetadata {
 
     var lastChapterNumber: Int? = null
     var rating: Float? = null
-    // var users: String? = null
 
     override var anilistId: String? = null
     override var kitsuId: String? = null
@@ -40,12 +37,8 @@ class MangaDexSearchMetadata : RaisedSearchMetadata(), TrackerIdMetadata {
 
     var status: Int? = null
 
-    // var missing_chapters: String? = null
-
     var followStatus: Int? = null
     var relation: MangaDexRelation? = null
-
-    // var maxChapterNumber: Int? = null
 
     override fun createMangaInfo(manga: SManga): SManga {
         val key = mdUuid?.let { "/manga/$it" }
