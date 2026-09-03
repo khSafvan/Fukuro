@@ -82,42 +82,31 @@ Use the included Gradle wrapper (`./gradlew`) to build and test:
   ./scripts/clean.sh --all       # Safely cleans module build directories and .gradle cache
   ```
 
-### Testing & Running on Linux (via Waydroid)
+### Running & Debugging with Android Studio
 
-This project is actively tested and developed on Linux using [Waydroid](https://waydro.id/) (container-based Android runtime).
+Android Studio is the recommended environment for developing, running, and debugging Fukurō.
 
-#### 1. Sideload into Waydroid
-Ensure your Waydroid session is running (`waydroid session start`), then install the built debug APK:
+#### 1. Run / Debug from Android Studio
+- Open the project in Android Studio.
+- Select the **app** run configuration and **debug** build variant from the **Build Variants** tool window.
+- Select your target Android Virtual Device (AVD) or connected physical device (API 26+).
+- Click **Run** (`Shift+F10`) or **Debug** (`Shift+F9`).
 
-```bash
-waydroid app install app/build/outputs/apk/debug/app-debug.apk
-```
+#### 2. Fast UI Iteration (Live Edit & Previews)
+The UI is built with **Jetpack Compose**:
+- **Live Edit**: Configure in **Settings → Editor → Live Edit** to push Composable code changes directly to the running device without full rebuilds.
+- **Compose Previews**: View interactive `@PreviewLightDark` components directly in the editor split pane.
+- See [DEVELOPMENT.md](DEVELOPMENT.md) for full Live Edit conventions and architectural guidelines.
 
-#### 2. Launch the App
-Launch Fukurō directly inside your Waydroid container using its debug package name:
-
-```bash
-waydroid app launch eu.kanade.tachiyomi.fukuro.debug
-```
-
-#### 3. Waydroid-Specific Considerations
-- **Image Compatibility**: The unified build runs cleanly on both vanilla and GApps Waydroid images; Firebase gracefully no-ops if Google Play Services are absent.
-- **Container Networking & DNS**: If manga source chapters time out or fail to load inside Waydroid, enable **DNS-over-HTTPS** in Fukurō (`More → Settings → Advanced → DNS-over-HTTPS → Cloudflare / Google`) to bypass container bridge DNS issues.
-- **Local Manga & Backup Files**: You can transfer `.tachibk` backups or local chapter folders directly into Waydroid via the shared media path on your host (`~/.local/share/waydroid/data/media/0/`).
-
-#### 4. UI Fast Iteration (Live Edit)
-The UI is built with **Jetpack Compose**. When developing in Android Studio:
-- Use **Compose Preview** directly in editor panels for instant layout rendering.
-- Use **Live Edit** / **Apply Code Changes** (`Ctrl+Alt+F10` / `Cmd+Option+R`) to hot-swap Compose composables without a full rebuild.
-
----
-
-#### Alternative: Physical Device / Standard ADB Testing
-For contributors testing on a physical Android device or standard AVD emulator, ADB can be used directly (Waydroid also registers with ADB when active):
+#### 3. Command Line & ADB Testing
+To install and inspect debug builds directly via ADB:
 
 ```bash
-# Install via ADB
-adb install -r app/build/outputs/apk/standard/debug/app-standard-debug.apk
+# Install debug build onto active device/emulator
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+
+# Launch the debug application
+adb shell am start -n eu.kanade.tachiyomi.fukuro.debug/eu.kanade.tachiyomi.ui.main.MainActivity
 
 # View logcat output filtered to Fukurō
 adb logcat -s "Fukuro" "logcat"
@@ -125,7 +114,7 @@ adb logcat -s "Fukuro" "logcat"
 
 ### Secrets & Configuration
 - **`local.properties`**: Android Studio automatically manages `sdk.dir`.
-- **Optional API Secrets**: Release builds configure optional client credentials (`app/google-services.json` and `app/src/main/assets/client_secrets.json`). These files are ignored by git and are omitted by default in debug and FOSS builds.
+- **Optional API Secrets**: Release builds configure optional client credentials (`app/google-services.json` and `app/src/main/assets/client_secrets.json`). These files are ignored by git and are omitted by default in local debug builds.
 - **Signing**: Debug builds automatically sign with the default Android debug keystore. Release builds require release keystore properties configured in your environment or CI.
 
 ---
