@@ -100,6 +100,17 @@
                 <data android:host="extension-store" />
             </intent-filter>
 
+            <!-- Deeplink to add extension store (fukuro) -->
+            <intent-filter android:label="@string/action_addExtensionStore">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="fukuro" />
+                <data android:host="extension-store" />
+            </intent-filter>
+
             <!-- Open backup files -->
             <intent-filter android:label="@string/pref_restore_backup">
                 <action android:name="android.intent.action.VIEW" />
@@ -428,6 +439,9 @@
                 <data
                     android:host="mangadex-auth"
                     android:scheme="tachiyomisy" />
+                <data
+                    android:host="mangadex-auth"
+                    android:scheme="fukuro" />
             </intent-filter>
         </activity>
 

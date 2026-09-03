@@ -1,10 +1,8 @@
-# TachiyomiSY
+# Fukurō
 
-[![Preview](https://github.com/jobobby04/TachiyomiSYPreview/workflows/Remote%20Dispatch%20Build%20App/badge.svg)](https://github.com/jobobby04/TachiyomiSYPreview/releases)
-[![Stable Release](https://img.shields.io/github/release/jobobby04/tachiyomisy.svg?maxAge=3600&label=download)](https://github.com/jobobby04/tachiyomisy/releases/latest)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 
-**TachiyomiSY** is a free and open-source manga reader for Android 8.0 (API 26) and above. Forked from [Tachiyomi](https://github.com/tachiyomiorg/tachiyomi) / [Mihon](https://github.com/mihonapp/mihon) (initially based on TachiyomiAZ), it enhances reader usability, metadata integration, and source management while staying closely aligned with upstream updates.
+**Fukurō** (フクロウ) is a free and open-source manga reader for Android 8.0 (API 26) and above. Forked from [Tachiyomi](https://github.com/tachiyomiorg/tachiyomi) / [Mihon](https://github.com/mihonapp/mihon) (based on TachiyomiSY / TachiyomiAZ), it enhances reader usability, metadata integration, and source management while maintaining full compatibility with the existing manga source extension ecosystem.
 
 ### Key Features
 - **Dynamic & Custom Categories**: Organize library content dynamically with custom source categories and drag-and-drop sorting.
@@ -17,7 +15,7 @@
 
 ## Installation
 
-Download the latest APK from the [GitHub Releases](https://github.com/jobobby04/tachiyomisy/releases/latest) page (or bleeding-edge [Preview Builds](https://github.com/jobobby04/tachiyomisypreview/releases)).
+Download the latest APK from your GitHub repository releases page.
 
 Two build variants are available:
 - **Standard**: Standard release containing Firebase crash reporting and Google Play Services integrations.
@@ -26,7 +24,7 @@ Two build variants are available:
 To sideload the APK onto a connected Android device via ADB:
 
 ```bash
-adb install -r TachiyomiSY-standard.apk
+adb install -r Fukuro-standard.apk
 ```
 
 *Note: The app includes a built-in update checker under `More → About → Check for updates`.*
@@ -46,8 +44,8 @@ adb install -r TachiyomiSY-standard.apk
 
 ### Clone & Open
 ```bash
-git clone https://github.com/jobobby04/TachiyomiSY.git
-cd TachiyomiSY
+git clone https://github.com/fukuro/fukuro.git
+cd fukuro
 ```
 Open the project root directory directly in Android Studio to trigger the initial Gradle sync.
 
@@ -99,12 +97,13 @@ The UI is built with **Jetpack Compose**. When developing in Android Studio:
 ## License & Credits
 
 ### Upstream Attribution
-TachiyomiSY is an open-source fork based on:
+Fukurō is an open-source fork based on:
 - [Tachiyomi](https://github.com/tachiyomiorg/tachiyomi) / [Mihon](https://github.com/mihonapp/mihon) by Javier Tomás and community contributors.
 - [TachiyomiAZ](https://github.com/AZ-forks/TachiyomiAZ) by Az.
+- [TachiyomiSY](https://github.com/jobobby04/tachiyomisy) by jobobby04.
 - Additional features and inspiration derived from [TachiyomiJ2K](https://github.com/Jays2Kings/tachiyomiJ2K) by Jays2Kings and [Neko](https://github.com/CarlosEsco/Neko) by CarlosEsco.
 
-Special thanks to all contributors who contributed patches and features, including Az, She11Shocked, Carlos, and Goldbattle.
+Special thanks to all upstream contributors who contributed patches and features, including Az, jobobby04, She11Shocked, Carlos, and Goldbattle.
 
 ### License
 This project is licensed under the **Apache License, Version 2.0**.

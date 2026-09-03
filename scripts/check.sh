@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # Script: check.sh
-# Purpose: Performs code quality, style, and formatting checks for TachiyomiSY.
+# Purpose: Performs code quality, style, and formatting checks for Fukurō.
 # Usage: ./scripts/check.sh [--help]
 # ==============================================================================
 
@@ -17,7 +17,7 @@ show_help() {
     cat << EOF
 Usage: $(basename "$0") [OPTIONS]
 
-Performs automated code checks for TachiyomiSY repository.
+Performs automated code checks for Fukurō repository.
 
 Options:
     -h, --help      Display this help message and exit

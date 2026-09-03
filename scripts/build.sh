@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # Script: build.sh
-# Purpose: Build helper script for assembling TachiyomiSY APKs.
+# Purpose: Build helper script for assembling Fukurō APKs.
 # Usage: ./scripts/build.sh [foss|standard] [--help]
 # ==============================================================================
 
@@ -18,7 +18,7 @@ show_help() {
     cat << EOF
 Usage: $(basename "$0") [VARIANT] [OPTIONS]
 
-Assembles TachiyomiSY Android application builds.
+Assembles Fukurō Android application builds.
 
 Variants:
     standard        Build standard debug variant (default)
@@ -59,7 +59,7 @@ if ! command -v java >/dev/null 2>&1; then
     exit 1
 fi
 
-echo -e "${BLUE}==> Building TachiyomiSY (${VARIANT} debug)...${NC}"
+echo -e "${BLUE}==> Building Fukurō (${VARIANT} debug)...${NC}"
 
 if [[ "$VARIANT" == "foss" ]]; then
     ./gradlew assembleFossDebug
