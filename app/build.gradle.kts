@@ -59,15 +59,6 @@ android {
             buildConfigField("String", "BUILD_TIME", "\"${getBuildTime(useLatestCommitTime = true)}\"")
             buildConfigField("boolean", "INCLUDE_UPDATER", "true")
         }
-        create("foss") {
-            initWith(getByName("release"))
-
-            applicationIdSuffix = ".foss"
-
-            matchingFallbacks.add("release")
-
-            buildConfigField("boolean", "INCLUDE_UPDATER", "false")
-        }
         create("benchmark") {
             initWith(getByName("release"))
 
@@ -81,10 +72,6 @@ android {
     }
 
     sourceSets {
-        getByName("release").java.directories.add("src/release/java")
-        getByName("foss").java.directories.add("src/foss/java")
-        getByName("debug").java.directories.add("src/debug/java")
-        getByName("benchmark").java.directories.add("src/debug/java")
         getByName("benchmark").res.directories.add("src/debug/res")
     }
 
@@ -276,11 +263,6 @@ dependencies {
     // Logging
     implementation(libs.logcat)
 
-    // Crash reports/analytics
-//    "standardImplementation"(platform(libs.firebase.bom))
-//    "standardImplementation"(libs.firebase.analytics)
-//    "standardImplementation"(libs.firebase.crashlytics)
-
     // Shizuku
     implementation(libs.bundles.shizuku)
 
@@ -334,11 +316,5 @@ androidComponents {
             shortcutsFile.set(projectDir.resolve("src/main/shortcuts.xml"))
         }
         resSource.addGeneratedSourceDirectory(replaceShortcutsPlaceholderTask) { it.outputDir }
-    }
-
-    onVariants(selector().withFlavor("default" to "standard")) {
-        // Only excluding in standard flavor because this breaks
-        // Layout Inspector's Compose tree
-        it.packaging.resources.excludes.add("META-INF/*.version")
     }
 }

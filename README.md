@@ -52,17 +52,17 @@ Open the project root directory directly in Android Studio to trigger the initia
 ### Build Commands
 Use the included Gradle wrapper (`./gradlew`) to build and test:
 
-- **Build Standard Debug APK**:
+- **Build Debug APK**:
   ```bash
-  ./gradlew assembleStandardDebug
+  ./gradlew assembleDebug
   ```
-  Output: `app/build/outputs/apk/standard/debug/`
+  Output: `app/build/outputs/apk/debug/app-debug.apk`
 
-- **Build FOSS Debug APK**:
+- **Build Release APKs**:
   ```bash
-  ./gradlew assembleFossDebug
+  ./gradlew assembleRelease
   ```
-  Output: `app/build/outputs/apk/foss/debug/`
+  Output: `app/build/outputs/apk/release/`
 
 - **Run Unit Tests**:
   ```bash
@@ -78,7 +78,7 @@ Use the included Gradle wrapper (`./gradlew`) to build and test:
 - **Automated Developer Scripts**:
   ```bash
   ./scripts/check.sh             # Validates shell script syntax and Spotless rules
-  ./scripts/build.sh standard    # Builds debug APK variant (standard or foss)
+  ./scripts/build.sh             # Builds debug APK (or ./scripts/build.sh release)
   ./scripts/clean.sh --all       # Safely cleans module build directories and .gradle cache
   ```
 
@@ -90,11 +90,7 @@ This project is actively tested and developed on Linux using [Waydroid](https://
 Ensure your Waydroid session is running (`waydroid session start`), then install the built debug APK:
 
 ```bash
-# Standard Debug Variant
-waydroid app install app/build/outputs/apk/standard/debug/app-standard-debug.apk
-
-# Or FOSS Debug Variant
-waydroid app install app/build/outputs/apk/foss/debug/app-foss-debug.apk
+waydroid app install app/build/outputs/apk/debug/app-debug.apk
 ```
 
 #### 2. Launch the App
@@ -105,7 +101,7 @@ waydroid app launch eu.kanade.tachiyomi.fukuro.debug
 ```
 
 #### 3. Waydroid-Specific Considerations
-- **Image Type (GApps vs. Vanilla)**: If running a vanilla (non-GApps) Waydroid image, use the **FOSS** build (`./gradlew assembleFossDebug`) to avoid harmless Firebase initialization warnings on launch.
+- **Image Compatibility**: The unified build runs cleanly on both vanilla and GApps Waydroid images; Firebase gracefully no-ops if Google Play Services are absent.
 - **Container Networking & DNS**: If manga source chapters time out or fail to load inside Waydroid, enable **DNS-over-HTTPS** in Fukurō (`More → Settings → Advanced → DNS-over-HTTPS → Cloudflare / Google`) to bypass container bridge DNS issues.
 - **Local Manga & Backup Files**: You can transfer `.tachibk` backups or local chapter folders directly into Waydroid via the shared media path on your host (`~/.local/share/waydroid/data/media/0/`).
 

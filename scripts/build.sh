@@ -2,7 +2,7 @@
 # ==============================================================================
 # Script: build.sh
 # Purpose: Build helper script for assembling Fukurō APKs.
-# Usage: ./scripts/build.sh [foss|standard] [--help]
+# Usage: ./scripts/build.sh [debug|release] [--help]
 # ==============================================================================
 
 set -euo pipefail
@@ -16,25 +16,25 @@ NC='\033[0m' # No Color
 
 show_help() {
     cat << EOF
-Usage: $(basename "$0") [VARIANT] [OPTIONS]
+Usage: $(basename "$0") [BUILD_TYPE] [OPTIONS]
 
 Assembles Fukurō Android application builds.
 
-Variants:
-    standard        Build standard debug variant (default)
-    foss            Build FOSS debug variant
+Build Types:
+    debug           Build debug APK (default)
+    release         Build release APKs (full release with updater)
 
 Options:
     -h, --help      Display this help message and exit
 EOF
 }
 
-VARIANT="standard"
+BUILD_TYPE="debug"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        standard|foss)
-            VARIANT="$1"
+        debug|release)
+            BUILD_TYPE="$1"
             shift
             ;;
         -h|--help)
@@ -59,12 +59,12 @@ if ! command -v java >/dev/null 2>&1; then
     exit 1
 fi
 
-echo -e "${BLUE}==> Building Fukurō (${VARIANT} debug)...${NC}"
+echo -e "${BLUE}==> Building Fukurō (${BUILD_TYPE})...${NC}"
 
-if [[ "$VARIANT" == "foss" ]]; then
-    ./gradlew assembleFossDebug
+if [[ "$BUILD_TYPE" == "release" ]]; then
+    ./gradlew assembleRelease
 else
-    ./gradlew assembleStandardDebug
+    ./gradlew assembleDebug
 fi
 
 echo -e "${GREEN}==> Build completed successfully!${NC}"
