@@ -112,6 +112,21 @@ adb shell am start -n eu.kanade.tachiyomi.fukuro.debug/eu.kanade.tachiyomi.ui.ma
 adb logcat -s "Fukuro" "logcat"
 ```
 
+#### 4. Fallback Testing: Physical Android Phone via USB Debugging
+If you do not have hardware virtualization for an AVD emulator, or need a lightweight on-device test setup:
+
+1. **Enable Developer Options**: On your Android phone, go to **Settings → About Phone** and tap **Build Number** 7 times.
+2. **Enable USB Debugging**: In **Settings → System → Developer Options**, toggle on **USB Debugging** (and **Install via USB** if prompted).
+3. **Connect Device**: Plug your phone into your development machine with a USB cable and tap **Allow** on the computer authorization dialog on your phone screen.
+4. **Verify ADB Detection**:
+   ```bash
+   adb devices
+   ```
+   *Your device should be listed as `device` (not `unauthorized` or `offline`).*
+5. **Run & Hot Reload**:
+   - In Android Studio's top toolbar, choose your phone from the device target dropdown.
+   - Click **Run** (`Shift+F10`) or use Live Edit directly — Live Edit pushes changes over USB to any device on Android 10+ (API 29+).
+
 ### Secrets & Configuration
 - **`local.properties`**: Android Studio automatically manages `sdk.dir`.
 - **Optional API Secrets**: Release builds configure optional client credentials (`app/google-services.json` and `app/src/main/assets/client_secrets.json`). These files are ignored by git and are omitted by default in local debug builds.

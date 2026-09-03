@@ -18,6 +18,9 @@ Live Edit is an IDE-level preference that cannot be enabled via project source f
 > [!NOTE]
 > Live Edit requires a device or emulator running Android 10 (API level 29) or higher, with Compose compiler and Compose runtime 1.3+.
 
+> [!TIP]
+> **Physical Phone Fallback**: If an AVD emulator cannot run or lacks hardware virtualization on your host, attach a physical phone via USB with **USB Debugging** enabled. Live Edit pushes incremental code changes seamlessly over USB with near-zero overhead.
+
 ---
 
 ## 2. Gradle Build Flags
