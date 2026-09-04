@@ -359,7 +359,7 @@ else
 
     log_step "Launching Android Emulator with AVD: '${LAUNCH_AVD}'..."
 
-    EMU_ARGS=("-avd" "$LAUNCH_AVD")
+    EMU_ARGS=("-avd" "$LAUNCH_AVD" "-no-snapshot-load")
     if [[ "$HEADLESS" == true ]]; then
         EMU_ARGS+=("-no-window" "-no-audio")
     fi

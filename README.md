@@ -1,155 +1,193 @@
-# Fukurō
+# Fukurō (フクロウ)
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Android%2012%2B%20(API%2031%2B)-brightgreen.svg)](https://developer.android.com/about/versions/12)
+[![Language](https://img.shields.io/badge/Language-Kotlin%20100%25-orange.svg)](https://kotlinlang.org/)
+[![UI Framework](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4.svg)](https://developer.android.com/jetpack/compose)
+[![PRD Status](https://img.shields.io/badge/PRD-Draft%20v1.0-purple.svg)](DEVELOPMENT.md#2-prd-implementation-blueprint)
 
-**Fukurō** (フクロウ) is a free and open-source manga reader for Android 8.0 (API 26) and above. Forked from [Tachiyomi](https://github.com/tachiyomiorg/tachiyomi) / [Mihon](https://github.com/mihonapp/mihon) (based on TachiyomiSY / TachiyomiAZ), it enhances reader usability, metadata integration, and source management while maintaining full compatibility with the existing manga source extension ecosystem.
-
-### Key Features
-- **Dynamic & Custom Categories**: Organize library content dynamically with custom source categories and drag-and-drop sorting.
-- **Enhanced Manga Reader**: Automatic webtoon detection, autoscroll, color-adaptive smart backgrounds, and custom page preloading.
-- **Advanced Library Search & Filters**: Support for exclusion terms, exact-quote matching, tracker status filtering, and content visibility controls.
-- **Source Migration & Batch Tools**: In-app migration between sources, batch source importation, and tag-based local/global search.
-- **Rich Metadata & Recommendations**: Recommendations powered by MyAnimeList, AniList, and MangaDex, plus enhanced E-Hentai/ExHentai integration.
+> **A high-performance, privacy-respecting manga & manhwa reader for Android — forked from TachiyomiSY, stripped of bloat, and rebuilt for speed.**
 
 ---
 
-## Installation
+## 1. Vision & Identity
 
-Download the latest release APK (`Fukuro.apk` or architecture-specific build) from the GitHub releases page.
+**Fukurō** (フクロウ, Japanese for "owl") is a native Android manga and manhwa reader forked from **TachiyomiSY** (itself based on Tachiyomi and Mihon). The project's mission is to take a proven, community-trusted reading engine and rebuild its performance-critical paths — rendering, storage, sync, and networking — from the ground up, while aggressively shedding years of accumulated technical debt and site-specific bloat.
 
-To sideload the APK onto a connected Android device via ADB:
+Our owl mascot embodies the product’s identity: **quiet, sharp-eyed, and built to see clearly in the dark corners of the web** that Cloudflare and ISP-level DPI censorship attempt to obscure.
 
-```bash
-adb install -r Fukuro.apk
+```
+       /\_/\
+      ((@v@))   FUKURŌ — Seeing clearly where others can't.
+      ():::()
+       VV-VV
 ```
 
-*Note: The app includes a built-in update checker under `More → About → Check for updates`.*
+---
+
+## 2. Why Fukurō? (Problems We Solve)
+
+Popular Tachiyomi / Mihon forks are feature-rich but burdened by years of backwards-compatibility shims and legacy architectural bottlenecks:
+
+| Problem Area | Legacy Mihon / TachiyomiSY Behavior | The Fukurō Solution |
+|---|---|---|
+| **Webtoon Rendering** | `subsampling-scale-image-view` causes GC pauses, memory spikes, and stutter on 15,000px+ long-strips. | **Hardware-accelerated Jetpack Compose Canvas**, bitmap pooling, dynamic texture slicing (>4000px), and proactive ahead-of-scroll prefetching. |
+| **Storage Traversal** | Android Storage Access Framework (`UniFile`) causes heavy I/O lag on libraries with 5,000+ chapters. | Direct `java.io.File` traversal with `MANAGE_EXTERNAL_STORAGE` and native **Requery SQLite** with `WAL` journal mode (<16ms perceived response). |
+| **Cloud Sync** | Fragile full-database JSON dumps to Google Drive corrupt easily on network drops, causing permanent sync lockouts. | **Git-backed, event-sourced append-only JSON journal** synced to user-owned private Git repositories (via JGit), with secondary cloud adapters. |
+| **Network Censorship** | Users must manually solve Cloudflare loops in WebViews or run separate VPNs to bypass ISP SNI/DPI filtering. | **Silent headless Cloudflare challenge solver** (`cf_clearance` injection), TLS fingerprint normalization, and **ClientHello fragmentation** for DPI bypass without a VPN. |
+| **Extension Installs** | Every extension update forces users through Android's disruptive "Install unknown apps" OS prompts. | **In-app dynamic extension loader** via runtime `DexClassLoader`, loading APK packages directly from sandboxed storage. |
+| **Bloat & Complexity** | Hardcoded E-Hentai/ExHentai database tables, custom login managers, and legacy UI layers add weight and complexity. | **The Great SY Purge**: complete removal of non-core site subsystems, shrinking APK footprint and maximizing maintainability. |
+| **Legacy OS Tax** | Supporting Android 8+ forces compatibility shims, blocking modern Android 12+ capabilities. | **Android 12 (API 31+) hard floor**: native Vulkan, Material You dynamic color, and SplashScreen API. |
 
 ---
 
-## Development / Build Setup
+## 3. Core Architectural Pillars
+
+### 🚀 1. Hardware-Accelerated Rendering Engine
+- Replaces `SubsamplingScaleImageView` with a hardware-accelerated Compose Canvas.
+- **Texture Slicing**: Automatically chunks ultra-tall manhwa panels (>4000px) before GPU dispatch to prevent OpenGL texture dimension overflows.
+- **Bitmap Pooling**: Zero-allocation recycled bitmap memory pools eliminate garbage collection pauses during fast scrolling.
+- **Ahead-of-Scroll Prefetcher**: Background I/O threads decode 3–5 upcoming pages ahead of user scroll velocity.
+- **Modern Codec Support**: Native JNI decoders for AVIF and JPEG XL formats.
+
+### ⚡ 2. High-Throughput Direct Storage & Requery SQLite
+- Uses `MANAGE_EXTERNAL_STORAGE` to bypass the slow Android DocumentFile/UniFile abstraction layer.
+- Upgrades Android's default SQLite driver to native **Requery SQLite bindings**.
+- Configures `PRAGMA journal_mode=WAL` and `PRAGMA synchronous=NORMAL` for concurrent, non-blocking reads during background downloads.
+
+### 🔒 3. Git-Backed, Event-Sourced Sync Engine
+- **Zero Full-DB Dumps**: Every action (mark chapter read, add manga, update category) is recorded as a lightweight JSON delta event.
+- **User Data Ownership**: Synchronizes against a user's private Git repository (GitHub, GitLab, Gitea, or self-hosted) via pure-Java JGit.
+- **Conflict-Free**: Offline-first event replaying guarantees zero data loss or database corruption even across interrupted networks.
+
+### 🛡️ 4. Native Anti-Blocking & Censorship Circumvention
+- **Headless Cloudflare Solver**: Silently solves JavaScript Turnstile/Cloudflare challenges in a background headless WebView and injects `cf_clearance` into OkHttp cookies.
+- **DPI/SNI Splitting**: Custom `SocketFactory` fragments the TLS `ClientHello` packet across TCP segments, defeating deep-packet-inspection censorship without routing traffic through a third-party VPN.
+- **Built-in DoH**: DNS-over-HTTPS fallback resolvers bypass ISP-level DNS poisoning.
+
+### 📦 5. Frictionless Dynamic Extensions
+- Downloads and stores extension APKs within internal application storage.
+- Loads extension bytecode at runtime via `DexClassLoader`, resolving host API interfaces seamlessly.
+- Never prompts the user with OS-level package installer dialogs.
+
+---
+
+## 4. Development Roadmap
+
+Development follows the 7-phase build architecture established in the [Product Requirements Document](DEVELOPMENT.md#2-prd-implementation-blueprint):
+
+| Phase | Milestone | Focus Area | Status |
+|:---:|:---|:---|:---:|
+| **1** | **Architecture & Scaffolding** | Set `minSdk=31`, remove legacy OS shims, enable Compose `StrongSkippingMode`, configure modern build tooling | 🟡 In Progress |
+| **2** | **Storage & Database Overhaul** | Direct `java.io.File` traversal, Requery SQLite bindings, WAL mode | 📋 Planned |
+| **3** | **Rendering Engine** | Compose hardware canvas, texture slicing, bitmap pooling, prefetch pipeline | 📋 Planned |
+| **4** | **Dynamic Extension Engine** | `DexClassLoader` runtime APK loading, isolation sandbox | 📋 Planned |
+| **5** | **Git-Backed Sync** | Event-sourced delta journal, JGit private repo synchronization | 📋 Planned |
+| **6** | **Access & Anti-Blocking** | Silent Cloudflare challenge solving, TLS normalization, DPI `ClientHello` fragmentation | 📋 Planned |
+| **7** | **The "Great SY Purge" & Polish** | Strip legacy E-Hentai subsystem, Baseline Profiles, Material You theming | 📋 Planned |
+| **★** | **AI Upscaling (Stretch)** | On-device NCNN / Vulkan GPU page super-resolution (Waifu2x / Real-CUGAN) | 🔮 Stretch |
+
+---
+
+## 5. Product Principles & Non-Goals
+
+### Product Principles
+1. **Native First**: 100% Kotlin & Jetpack Compose. Cross-platform frameworks (e.g. React Native) introduce bridge overhead and memory latency during continuous high-res bitmap scrolling.
+2. **Own Your Data**: Data synchronizes exclusively to user-controlled endpoints (private Git repositories or personal cloud drives). No proprietary backend, no accounts, no tracking.
+3. **Cut, Don't Carry**: Non-essential features, legacy compatibility wrappers, and site-specific subsystems are purged rather than preserved.
+4. **Modern OS, No Compromises**: Android 12+ only, unlocking modern platform APIs without polyfills.
+
+### Non-Goals (v1)
+- **No iOS Support in v1**: Any future iOS client would require a Kotlin Multiplatform core extraction or independent Swift client.
+- **No Android < 12**: Devices running Android 11 or older will not be supported.
+- **No E-Hentai Maintenance**: E-Hentai-specific metadata tables and UI will be removed.
+- **No Hosted Cloud Service**: Fukuro will never operate a centralized user database or sync server.
+
+---
+
+## 6. Installation
+
+### System Requirements
+- **Operating System**: Android 12.0 (API Level 31) or higher.
+- **Architecture**: `arm64-v8a`, `x86_64`, `armeabi-v7a`, or `universal`.
+
+### Sideloading via ADB
+Download the appropriate APK from the [Releases](https://github.com/khSafvan/Fukuro/releases) page and install:
+
+```bash
+# Install on connected device or running emulator
+adb install -r app-universal-debug.apk
+```
+
+---
+
+## 7. Developer Quickstart
 
 ### Prerequisites
-- **Android Studio**: Hedgehog (2023.1.1) or newer recommended.
-- **JDK**: Java 17 (e.g. Eclipse Temurin 17).
-- **Android SDK**:
-  - `minSdk`: 26 (Android 8.0 Oreo)
-  - `compileSdk`: 37
-  - `targetSdk`: 36
-  - `NDK`: 29.0.14206865
+- **Android Studio**: Ladybug (2024.2.1+) or newer.
+- **JDK**: Java 17 or Java 21 (e.g. OpenJDK 21 / Eclipse Temurin).
+- **Android SDK**: `compileSdk = 37`, `targetSdk = 36`, `minSdk = 31`.
 
-### Clone & Open
-```bash
-git clone https://github.com/fukuro/fukuro.git
-cd fukuro
-```
-Open the project root directory directly in Android Studio to trigger the initial Gradle sync.
-
-### Build Commands
-Use the included Gradle wrapper (`./gradlew`) to build and test:
-
-- **Build Debug APKs**:
-  ```bash
-  ./gradlew assembleDebug
-  ```
-  Output: `app/build/outputs/apk/debug/app-universal-debug.apk` (and ABI-split builds `app-{x86_64,arm64-v8a,armeabi-v7a}-debug.apk`)
-
-- **Build Release APKs**:
-  ```bash
-  ./gradlew assembleRelease
-  ```
-  Output: `app/build/outputs/apk/release/`
-
-- **Run Unit Tests**:
-  ```bash
-  ./gradlew test
-  ```
-
-- **Verify & Apply Code Formatting**:
-  ```bash
-  ./gradlew spotlessCheck
-  ./gradlew spotlessApply
-  ```
-
-- **Automated Developer Scripts**:
-  ```bash
-  ./scripts/run.sh               # Full lifecycle: check -> test -> build -> launch emulator -> install -> run
-  ./scripts/run.sh --skip-test   # Fast iteration: build, start emulator, and launch
-  ./scripts/check.sh             # Validates shell script syntax and Spotless rules (use --apply to fix)
-  ./scripts/build.sh             # Builds debug APK (or ./scripts/build.sh release)
-  ./scripts/clean.sh --all       # Safely cleans module build directories, native cache, and .gradle cache
-  ```
-
-### Running & Debugging with Android Studio
-
-Android Studio is the recommended environment for developing, running, and debugging Fukurō.
-
-#### 1. Run / Debug from Android Studio
-- Open the project in Android Studio.
-- Select the **app** run configuration and **debug** build variant from the **Build Variants** tool window.
-- Select your target Android Virtual Device (AVD) or connected physical device (API 26+).
-- Click **Run** (`Shift+F10`) or **Debug** (`Shift+F9`).
-
-#### 2. Fast UI Iteration (Live Edit & Previews)
-The UI is built with **Jetpack Compose**:
-- **Live Edit**: Configure in **Settings → Editor → Live Edit** to push Composable code changes directly to the running device without full rebuilds.
-- **Compose Previews**: View interactive `@PreviewLightDark` components directly in the editor split pane.
-- See [DEVELOPMENT.md](DEVELOPMENT.md) for full Live Edit conventions and architectural guidelines.
-
-#### 3. Command Line & ADB Testing
-To install and inspect debug builds directly via ADB or automated script:
+### 🚀 One-Command Full Workflow
+We provide an automated master pipeline script that validates code quality, executes unit tests, compiles the APK, launches the Android emulator (if not already running), installs the APK, and starts Fukurō:
 
 ```bash
-# Automated run (builds, starts emulator if needed, installs, and launches)
 ./scripts/run.sh
-
-# Or manual ADB installation onto active device/emulator
-adb install -r app/build/outputs/apk/debug/app-universal-debug.apk
-
-# Launch the debug application
-adb shell am start -n eu.kanade.tachiyomi.fukuro.debug/eu.kanade.tachiyomi.ui.main.MainActivity
-
-# View logcat output filtered to Fukurō
-adb logcat -s "Fukuro" "logcat"
 ```
 
-#### 4. Fallback Testing: Physical Android Phone via USB Debugging
-If you do not have hardware virtualization for an AVD emulator, or need a lightweight on-device test setup:
+### Developer Automation Scripts
+Located in [`scripts/`](scripts/):
 
-1. **Enable Developer Options**: On your Android phone, go to **Settings → About Phone** and tap **Build Number** 7 times.
-2. **Enable USB Debugging**: In **Settings → System → Developer Options**, toggle on **USB Debugging** (and **Install via USB** if prompted).
-3. **Connect Device**: Plug your phone into your development machine with a USB cable and tap **Allow** on the computer authorization dialog on your phone screen.
-4. **Verify ADB Detection**:
-   ```bash
-   adb devices
-   ```
-   *Your device should be listed as `device` (not `unauthorized` or `offline`).*
-5. **Run & Hot Reload**:
-   - In Android Studio's top toolbar, choose your phone from the device target dropdown.
-   - Click **Run** (`Shift+F10`) or use Live Edit directly — Live Edit pushes changes over USB to any device on Android 10+ (API 29+).
+| Script | Command | Purpose |
+|---|---|---|
+| **Master Runner** | `./scripts/run.sh` | Full lifecycle: quality check → unit tests → APK build → boot emulator → install → launch |
+| **Fast Iteration** | `./scripts/run.sh --skip-test` | Skips unit tests for rapid UI testing and Live Edit iteration |
+| **Targeted AVD** | `./scripts/run.sh --avd Pixel_10a` | Starts a specific Android Virtual Device |
+| **Code Checker** | `./scripts/check.sh` | Validates shell syntax and runs Spotless code formatting checks |
+| **Auto-Format** | `./scripts/check.sh --apply` | Automatically fixes all Spotless Kotlin/XML formatting violations |
+| **Build Helper** | `./scripts/build.sh [debug\|release]` | Builds APKs, detects architecture splits, and outputs package sizes |
+| **Deep Clean** | `./scripts/clean.sh --all` | Cleans module `build/` directories, `.cxx`, native cache, and `.gradle` |
 
-### Secrets & Configuration
-- **`local.properties`**: Android Studio automatically manages `sdk.dir`.
-- **Optional API Secrets**: Release builds configure optional client credentials (`app/google-services.json` and `app/src/main/assets/client_secrets.json`). These files are ignored by git and are omitted by default in local debug builds.
-- **Signing**: Debug builds automatically sign with the default Android debug keystore. Release builds require release keystore properties configured in your environment or CI.
+### Manual Build Commands
+```bash
+# Build Debug APKs (produces universal + ABI split APKs)
+./gradlew assembleDebug
+
+# Build Release APKs
+./gradlew assembleRelease
+
+# Run Unit Tests
+./gradlew test
+
+# Verify & Apply Code Formatting
+./gradlew spotlessCheck
+./gradlew spotlessApply
+```
 
 ---
 
-## License & Credits
+## 8. Live Edit & Android Studio Development
 
-### Upstream Attribution
-Fukurō is an open-source fork based on:
-- [Tachiyomi](https://github.com/tachiyomiorg/tachiyomi) / [Mihon](https://github.com/mihonapp/mihon) by Javier Tomás and community contributors.
-- [TachiyomiAZ](https://github.com/AZ-forks/TachiyomiAZ) by Az.
+Fukurō is optimized for **Android Studio Live Edit** (hot-reload of Compose UI without rebuilding APKs):
+
+1. In Android Studio, go to **Settings → Editor → Live Edit**.
+2. Select **Push edits automatically (Immediate)**.
+3. Ensure **Live Edit of Composables** is checked.
+4. Run `./scripts/run.sh` to launch your emulator, then edit Composables in real-time.
+
+For detailed architecture rules (State Hoisting, `@Immutable` models, and `@PreviewLightDark` micro-components), see [DEVELOPMENT.md](DEVELOPMENT.md).
+
+---
+
+## 9. Attribution & License
+
+### Upstream Heritage
+Fukurō is built upon the foundational work of the open-source manga reader community:
+- [Tachiyomi](https://github.com/tachiyomiorg/tachiyomi) / [Mihon](https://github.com/mihonapp/mihon) by Javier Tomás and contributors.
 - [TachiyomiSY](https://github.com/jobobby04/tachiyomisy) by jobobby04.
-- Additional features and inspiration derived from [TachiyomiJ2K](https://github.com/Jays2Kings/tachiyomiJ2K) by Jays2Kings and [Neko](https://github.com/CarlosEsco/Neko) by CarlosEsco.
-
-Special thanks to all upstream contributors who contributed patches and features, including Az, jobobby04, She11Shocked, Carlos, and Goldbattle.
+- [TachiyomiAZ](https://github.com/AZ-forks/TachiyomiAZ) by Az.
+- [TachiyomiJ2K](https://github.com/Jays2Kings/tachiyomiJ2K) by Jays2Kings.
+- [Neko](https://github.com/CarlosEsco/Neko) by CarlosEsco.
 
 ### License
-This project is licensed under the **Apache License, Version 2.0**.
-You may obtain a copy of the License in the [LICENSE](./LICENSE) file or at:
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+This project is licensed under the **Apache License, Version 2.0**. See the [LICENSE](LICENSE) file for details.
