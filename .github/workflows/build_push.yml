@@ -30,21 +30,12 @@ jobs:
       - name: Set up gradle
         uses: gradle/actions/setup-gradle@v5
 
-      # SY -->
-      - name: Write google-services.json
-        uses: DamianReeves/write-file-action@v1.3
-        with:
-          path: app/google-services.json
-          contents: ${{ secrets.GOOGLE_SERVICES_TEXT }}
-          write-mode: overwrite
-
       - name: Write client_secrets.json
         uses: DamianReeves/write-file-action@v1.3
         with:
           path: app/src/main/assets/client_secrets.json
           contents: ${{ secrets.CLIENT_SECRETS_TEXT }}
           write-mode: overwrite
-      # SY <--
 
       - name: Check code format
         run: ./gradlew spotlessCheck
@@ -70,28 +61,28 @@ jobs:
         run: |
           set -e
 
-          mv app/build/outputs/apk/release/app-universal-release-unsigned-signed.apk TachiyomiSY.apk
-          mv app/build/outputs/apk/release/app-arm64-v8a-release-unsigned-signed.apk TachiyomiSY-arm64-v8a.apk
-          mv app/build/outputs/apk/release/app-armeabi-v7a-release-unsigned-signed.apk TachiyomiSY-armeabi-v7a.apk
-          mv app/build/outputs/apk/release/app-x86-release-unsigned-signed.apk TachiyomiSY-x86.apk
-          mv app/build/outputs/apk/release/app-x86_64-release-unsigned-signed.apk TachiyomiSY-x86_64.apk
+          mv app/build/outputs/apk/release/app-universal-release-unsigned-signed.apk Fukuro.apk
+          mv app/build/outputs/apk/release/app-arm64-v8a-release-unsigned-signed.apk Fukuro-arm64-v8a.apk
+          mv app/build/outputs/apk/release/app-armeabi-v7a-release-unsigned-signed.apk Fukuro-armeabi-v7a.apk
+          mv app/build/outputs/apk/release/app-x86-release-unsigned-signed.apk Fukuro-x86.apk
+          mv app/build/outputs/apk/release/app-x86_64-release-unsigned-signed.apk Fukuro-x86_64.apk
 
       - name: Create release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.run_number }}
-          name: TachiyomiSY
+          name: Fukurō
           body: |
             <!-->
             > [!TIP]
             >
-            > ### If you are unsure which version to download then go with `TachiyomiSY.apk`
+            > ### If you are unsure which version to download then go with `Fukuro.apk`
           files: |
-            TachiyomiSY.apk
-            TachiyomiSY-arm64-v8a.apk
-            TachiyomiSY-armeabi-v7a.apk
-            TachiyomiSY-x86.apk
-            TachiyomiSY-x86_64.apk
+            Fukuro.apk
+            Fukuro-arm64-v8a.apk
+            Fukuro-armeabi-v7a.apk
+            Fukuro-x86.apk
+            Fukuro-x86_64.apk
           draft: true
           prerelease: false
         env:
