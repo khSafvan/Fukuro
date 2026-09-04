@@ -3,9 +3,8 @@ package eu.kanade.presentation.reader.appbars
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import eu.kanade.presentation.components.AppBar
-
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import eu.kanade.presentation.components.AppBar
 import eu.kanade.presentation.theme.TachiyomiPreviewTheme
 
 @Composable
@@ -40,4 +39,3 @@ private fun ReaderTopBarPreview() {
         )
     }
 }
-

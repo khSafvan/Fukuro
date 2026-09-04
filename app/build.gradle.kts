@@ -18,7 +18,13 @@ plugins {
     id("com.github.ben-manes.versions")
 }
 
-if (gradle.startParameter.taskRequests.toString().contains("Release")) {
+val hasGoogleServices = listOf(
+    file("google-services.json"),
+    file("src/release/google-services.json"),
+    file("src/google-services.json"),
+).any { it.exists() }
+
+if (gradle.startParameter.taskRequests.toString().contains("Release") && hasGoogleServices) {
     pluginManager.apply {
         apply(libs.plugins.google.services.get().pluginId)
         apply(libs.plugins.firebase.crashlytics.get().pluginId)

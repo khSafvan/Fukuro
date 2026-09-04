@@ -48,11 +48,11 @@ Open the project root directory directly in Android Studio to trigger the initia
 ### Build Commands
 Use the included Gradle wrapper (`./gradlew`) to build and test:
 
-- **Build Debug APK**:
+- **Build Debug APKs**:
   ```bash
   ./gradlew assembleDebug
   ```
-  Output: `app/build/outputs/apk/debug/app-debug.apk`
+  Output: `app/build/outputs/apk/debug/app-universal-debug.apk` (and ABI-split builds `app-{x86_64,arm64-v8a,armeabi-v7a}-debug.apk`)
 
 - **Build Release APKs**:
   ```bash
@@ -73,9 +73,11 @@ Use the included Gradle wrapper (`./gradlew`) to build and test:
 
 - **Automated Developer Scripts**:
   ```bash
-  ./scripts/check.sh             # Validates shell script syntax and Spotless rules
+  ./scripts/run.sh               # Full lifecycle: check -> test -> build -> launch emulator -> install -> run
+  ./scripts/run.sh --skip-test   # Fast iteration: build, start emulator, and launch
+  ./scripts/check.sh             # Validates shell script syntax and Spotless rules (use --apply to fix)
   ./scripts/build.sh             # Builds debug APK (or ./scripts/build.sh release)
-  ./scripts/clean.sh --all       # Safely cleans module build directories and .gradle cache
+  ./scripts/clean.sh --all       # Safely cleans module build directories, native cache, and .gradle cache
   ```
 
 ### Running & Debugging with Android Studio
@@ -95,11 +97,14 @@ The UI is built with **Jetpack Compose**:
 - See [DEVELOPMENT.md](DEVELOPMENT.md) for full Live Edit conventions and architectural guidelines.
 
 #### 3. Command Line & ADB Testing
-To install and inspect debug builds directly via ADB:
+To install and inspect debug builds directly via ADB or automated script:
 
 ```bash
-# Install debug build onto active device/emulator
-adb install -r app/build/outputs/apk/debug/app-debug.apk
+# Automated run (builds, starts emulator if needed, installs, and launches)
+./scripts/run.sh
+
+# Or manual ADB installation onto active device/emulator
+adb install -r app/build/outputs/apk/debug/app-universal-debug.apk
 
 # Launch the debug application
 adb shell am start -n eu.kanade.tachiyomi.fukuro.debug/eu.kanade.tachiyomi.ui.main.MainActivity

@@ -75,3 +75,18 @@ Develop style-heavy, frequently modified micro-components in isolation using `@P
 - **Library Grid Items**: `MangaCompactGridItem` and `MangaComfortableGridItem` in [CommonMangaItem.kt](app/src/main/java/eu/kanade/presentation/library/components/CommonMangaItem.kt).
 - **Reader Overlays**: `ReaderTopBar` and `ReaderBottomBar` in [ReaderTopBar.kt](app/src/main/java/eu/kanade/presentation/reader/appbars/ReaderTopBar.kt) and [ReaderBottomBar.kt](app/src/main/java/eu/kanade/presentation/reader/appbars/ReaderBottomBar.kt).
 - Always wrap preview instances in `TachiyomiPreviewTheme` to test both light and dark themes simultaneously in Android Studio's design pane.
+
+---
+
+## 5. Developer Automation Scripts
+
+The `scripts/` directory provides developer utilities with robust error detection and reporting:
+
+- **`./scripts/run.sh`**: Master pipeline script that verifies code quality (Spotless), runs unit tests, compiles the debug APK, ensures an Android emulator (e.g. `Pixel_10a`) is running, streams/installs the APK, and launches Fukurō's `MainActivity`.
+  - `./scripts/run.sh --skip-test`: Skip unit tests for rapid iterative development.
+  - `./scripts/run.sh --clean`: Clean build cache prior to execution.
+  - `./scripts/run.sh --avd <name>`: Target a specific Android Virtual Device.
+- **`./scripts/check.sh`**: Validates shell script syntax and executes Spotless code formatting checks (`./scripts/check.sh --apply` to automatically fix formatting issues).
+- **`./scripts/build.sh`**: Builds debug or release APKs and displays the resulting ABI split packages.
+- **`./scripts/clean.sh --all`**: Cleans module build outputs, native C++ build directories, and Gradle cache.
+

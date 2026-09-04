@@ -52,14 +52,19 @@ cd "${ROOT_DIR}"
 
 echo -e "${BLUE}==> Cleaning build outputs...${NC}"
 
+# If Gradle wrapper and Java are available, run gradlew clean
+if command -v java >/dev/null 2>&1 && [[ -x "./gradlew" ]]; then
+    ./gradlew clean --quiet 2>/dev/null || true
+fi
+
 # Clean Gradle build directories idempotently
 find . -name "build" -type d -exec rm -rf {} + 2>/dev/null || true
 echo -e "${GREEN}  ✓ Removed module build directories${NC}"
 
 if [[ "$CLEAN_ALL" == true ]]; then
-    echo -e "${YELLOW}--> Deep cleaning caches (.gradle)...${NC}"
-    rm -rf .gradle .kotlin
-    echo -e "${GREEN}  ✓ Removed .gradle and .kotlin cache directories${NC}"
+    echo -e "${YELLOW}--> Deep cleaning caches (.gradle, .kotlin, native builds)...${NC}"
+    rm -rf .gradle .kotlin .cxx .externalNativeBuild captures
+    echo -e "${GREEN}  ✓ Removed .gradle, .kotlin, and native build cache directories${NC}"
 fi
 
 echo -e "${GREEN}==> Cleanup complete!${NC}"

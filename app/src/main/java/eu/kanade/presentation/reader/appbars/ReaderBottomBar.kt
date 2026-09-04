@@ -14,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import eu.kanade.presentation.theme.TachiyomiPreviewTheme
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderBottomButton
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderOrientation
@@ -21,8 +23,6 @@ import eu.kanade.tachiyomi.ui.reader.setting.ReadingMode
 import tachiyomi.i18n.MR
 import tachiyomi.i18n.sy.SYMR
 import tachiyomi.presentation.core.i18n.stringResource
-import androidx.compose.ui.tooling.preview.PreviewLightDark
-import eu.kanade.presentation.theme.TachiyomiPreviewTheme
 
 @Composable
 fun ReaderBottomBar(
@@ -41,9 +41,9 @@ fun ReaderBottomBar(
     dualPageSplitEnabled: Boolean,
     doublePages: Boolean,
     onClickChapterList: () -> Unit,
-    onClickWebView: (() -> Unit)?,
-    onClickBrowser: (() -> Unit)?,
-    onClickShare: (() -> Unit)?,
+    onClickWebView: (() -> Unit)? = null,
+    onClickBrowser: (() -> Unit)? = null,
+    onClickShare: (() -> Unit)? = null,
     onClickPageLayout: () -> Unit,
     onClickShiftPage: () -> Unit,
     // SY <--
@@ -175,9 +175,11 @@ private fun ReaderBottomBarPreview() {
             dualPageSplitEnabled = false,
             doublePages = false,
             onClickChapterList = {},
+            onClickWebView = {},
+            onClickBrowser = {},
+            onClickShare = {},
             onClickPageLayout = {},
             onClickShiftPage = {},
         )
     }
 }
-
